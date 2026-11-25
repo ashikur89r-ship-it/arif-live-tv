@@ -42,19 +42,16 @@ public class MainActivity extends Activity {
 
     private void playInline(String url,String title,float x,float y,float w,float h) {
         stopInline();
-        float d=getResources().getDisplayMetrics().density;
-        int[] webPos=new int[2]; int[] rootPos=new int[2];
-        webView.getLocationOnScreen(webPos); root.getLocationOnScreen(rootPos);
-        int left=webPos[0]-rootPos[0]+Math.round(x*d);
-        int top=webPos[1]-rootPos[1]+Math.round(y*d);
+        // Use a full-screen native video surface. WebView element coordinates can
+        // be offset/scaled differently across Android devices, hiding the video.
         playerView=new TextureView(this);
-        FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(Math.round(w*d),Math.round(h*d));
-        lp.leftMargin=left; lp.topMargin=top;
+        playerView.setOpaque(true);
+        FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(-1,-1);
         root.addView(playerView,lp);
         closePlayer=new TextView(this); closePlayer.setText("✕"); closePlayer.setTextColor(Color.WHITE);
-        closePlayer.setTextSize(20); closePlayer.setGravity(Gravity.CENTER); closePlayer.setBackgroundColor(0xCC111111);
-        FrameLayout.LayoutParams cp=new FrameLayout.LayoutParams(dp(42),dp(42),Gravity.TOP|Gravity.RIGHT);
-        cp.leftMargin=left+Math.round(w*d)-dp(46); cp.topMargin=top+dp(4);
+        closePlayer.setTextSize(22); closePlayer.setGravity(Gravity.CENTER); closePlayer.setBackgroundColor(0xCC111111);
+        FrameLayout.LayoutParams cp=new FrameLayout.LayoutParams(dp(48),dp(48),Gravity.TOP|Gravity.RIGHT);
+        cp.topMargin=dp(28); cp.rightMargin=dp(12);
         root.addView(closePlayer,cp); closePlayer.setOnClickListener(v->stopInline());
         DefaultLoadControl loadControl = new DefaultLoadControl.Builder().setBufferDurationsMs(15000, 50000, 1000, 2000).setPrioritizeTimeOverSizeThresholds(true).build();
         DefaultHttpDataSource.Factory httpFactory = new DefaultHttpDataSource.Factory()
