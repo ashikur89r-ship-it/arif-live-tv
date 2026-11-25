@@ -18,7 +18,7 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.common.MimeTypes;
 import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.exoplayer.DefaultMediaSourceFactory;
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.rtsp.RtspMediaSource;
@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
         playerView.setPlayer(player);
         player.addListener(new Player.Listener() {
             @Override public void onPlayerError(androidx.media3.common.PlaybackException e) {
-                Toast.makeText(MainActivity.this, "ভিডিও চালানো যাচ্ছে না: " + e.errorCodeName, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "ভিডিও চালানো যাচ্ছে না: " + (e.getMessage() == null ? "Stream error" : e.getMessage()), Toast.LENGTH_LONG).show();
                 closePlayer.setText("✕"); closePlayer.setOnClickListener(v->stopInline());
             }
         });
