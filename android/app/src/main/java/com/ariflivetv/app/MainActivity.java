@@ -93,7 +93,10 @@ public class MainActivity extends Activity {
         super.onCreate(b);
         root=new FrameLayout(this); webView=new WebView(this); root.addView(webView,new FrameLayout.LayoutParams(-1,-1)); setContentView(root);
         WebSettings s=webView.getSettings(); s.setJavaScriptEnabled(true);s.setDomStorageEnabled(true);s.setDatabaseEnabled(true);s.setMediaPlaybackRequiresUserGesture(false);s.setAllowFileAccess(true);s.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
-        // Keep playback inside the website home-page player; do not launch a separate native screen.webView.setWebViewClient(new WebViewClient());webView.setWebChromeClient(new WebChromeClient());webView.loadUrl("file:///android_asset/index.html");
+        // Keep playback inside the website home-page player; do not launch a separate native screen.
+        webView.setWebViewClient(new WebViewClient());
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.loadUrl("file:///android_asset/index.html");
     }
     @Override public void onBackPressed(){if(player!=null)stopInline();else if(webView!=null&&webView.canGoBack())webView.goBack();else super.onBackPressed();}
     @Override protected void onDestroy(){stopInline();if(webView!=null)webView.destroy();super.onDestroy();}
