@@ -7,8 +7,12 @@ import android.widget.LinearLayout;
 import android.graphics.Color;
 import android.view.Gravity;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.MimeTypes;
 import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.rtsp.RtspMediaSource;
+import androidx.media3.exoplayer.source.MediaSource;
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.ui.PlayerView;
 
 public class PlayerActivity extends Activity {
@@ -43,10 +47,24 @@ public class PlayerActivity extends Activity {
         player.addListener(new Player.Listener() {
             @Override public void onPlayerError(androidx.media3.common.PlaybackException error) {
                 String detail = error.getMessage();
-                heading.setText("Playback error: " + (detail == null ? "Stream could not be played" : detail));
+                heading.setText("চালানো যাচ্ছে না: " + (detail == null ? error.errorCode : detail));
             }
         });
-        player.setMediaItem(MediaItem.fromUri(url));
+
+        String lower = url.toLowerCase();
+        MediaItem.Builder item = new MediaItem.Builder().setUri(url);
+        if (lower.contains(".m3u8")) {
+            item.setMimeType(MimeTypes.APPLICATION_M3U8);
+        } else if (lower.contains(".mpd")) {
+            item.setMimeType(MimeTypes.APPLICATION_MPD);
+        } else if (lower.startsWith("rtsp://")) {
+            MediaSource rtsp = new RtspMediaSource.Factory().createMediaSource(item.build());
+            player.setMediaSource(rtsp);
+            player.prepare();
+            player.play();
+            return;
+        }
+        player.setMediaItem(item.build());
         player.prepare();
         player.play();
     }
