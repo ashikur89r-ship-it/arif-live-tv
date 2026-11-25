@@ -1,0 +1,24 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.ariflivetv.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.ariflivetv.app'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+    }
+}
+
+tasks.register('copyWebAssets', Copy) {
+    from(rootProject.projectDir.parentFile) {
+        include 'index.html'
+    }
+    into(layout.projectDirectory.dir('src/main/assets'))
+}
+tasks.named('preBuild').configure { dependsOn('copyWebAssets') }
