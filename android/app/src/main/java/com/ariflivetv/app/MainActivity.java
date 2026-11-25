@@ -1,6 +1,7 @@
 package com.ariflivetv.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.graphics.Color;
 import android.view.View;
@@ -36,7 +37,12 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void play(String url, String title, float x, float y, float w, float h) {
             if (url == null || !(url.startsWith("https://") || url.startsWith("http://") || url.startsWith("rtsp://"))) return;
-            runOnUiThread(() -> playInline(url,title,x,y,w,h));
+            runOnUiThread(() -> {
+                Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+                intent.putExtra("stream_url", url);
+                intent.putExtra("stream_title", title == null ? "ARIF LIVE TV" : title);
+                startActivity(intent);
+            });
         }
     }
 
