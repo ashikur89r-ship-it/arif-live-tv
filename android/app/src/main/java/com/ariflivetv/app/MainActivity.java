@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -17,6 +18,8 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.common.MimeTypes;
 import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.DefaultMediaSourceFactory;
+import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.rtsp.RtspMediaSource;
 import androidx.media3.ui.PlayerView;
@@ -39,8 +42,10 @@ public class MainActivity extends Activity {
     private void playInline(String url,String title,float x,float y,float w,float h) {
         stopInline();
         float d=getResources().getDisplayMetrics().density;
-        int[] pos=new int[2]; webView.getLocationOnScreen(pos); root.getLocationOnScreen(new int[2]);
-        int left=Math.round(x*d), top=Math.round(y*d);
+        int[] webPos=new int[2]; int[] rootPos=new int[2];
+        webView.getLocationOnScreen(webPos); root.getLocationOnScreen(rootPos);
+        int left=webPos[0]-rootPos[0]+Math.round(x*d);
+        int top=webPos[1]-rootPos[1]+Math.round(y*d);
         playerView=new PlayerView(this); playerView.setUseController(true);
         FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(Math.round(w*d),Math.round(h*d));
         lp.leftMargin=left; lp.topMargin=top;
@@ -51,10 +56,18 @@ public class MainActivity extends Activity {
         cp.leftMargin=left+Math.round(w*d)-dp(46); cp.topMargin=top+dp(4);
         root.addView(closePlayer,cp); closePlayer.setOnClickListener(v->stopInline());
         DefaultLoadControl loadControl = new DefaultLoadControl.Builder().setBufferDurationsMs(15000, 50000, 1000, 2000).setPrioritizeTimeOverSizeThresholds(true).build();
-        player=new ExoPlayer.Builder(this).setLoadControl(loadControl).build(); playerView.setPlayer(player);
+        DefaultHttpDataSource.Factory httpFactory = new DefaultHttpDataSource.Factory()
+                .setUserAgent("Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36 ARIF-LIVE-TV")
+                .setAllowCrossProtocolRedirects(true);
+        player=new ExoPlayer.Builder(this)
+                .setLoadControl(loadControl)
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(httpFactory))
+                .build();
+        playerView.setPlayer(player);
         player.addListener(new Player.Listener() {
             @Override public void onPlayerError(androidx.media3.common.PlaybackException e) {
-                closePlayer.setText("!"); closePlayer.setOnClickListener(v->stopInline());
+                Toast.makeText(MainActivity.this, "ভিডিও চালানো যাচ্ছে না: " + e.errorCodeName, Toast.LENGTH_LONG).show();
+                closePlayer.setText("✕"); closePlayer.setOnClickListener(v->stopInline());
             }
         });
         MediaItem.Builder item=new MediaItem.Builder().setUri(url);
