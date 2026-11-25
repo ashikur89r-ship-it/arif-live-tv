@@ -2,7 +2,6 @@ package com.ariflivetv.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.graphics.Color;
@@ -41,14 +40,15 @@ public class PlayerActivity extends Activity {
 
         player = new ExoPlayer.Builder(this).build();
         playerView.setPlayer(player);
+        player.addListener(new Player.Listener() {
+            @Override public void onPlayerError(androidx.media3.common.PlaybackException error) {
+                String detail = error.getMessage();
+                heading.setText("Playback error: " + (detail == null ? "Stream could not be played" : detail));
+            }
+        });
         player.setMediaItem(MediaItem.fromUri(url));
         player.prepare();
         player.play();
-        player.addListener(new Player.Listener() {
-            @Override public void onPlayerError(androidx.media3.common.PlaybackException error) {
-                heading.setText("Playback error: " + error.errorCodeName);
-            }
-        });
     }
 
     @Override protected void onStop() {
