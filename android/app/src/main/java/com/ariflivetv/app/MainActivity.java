@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.view.View;
 import android.view.Gravity;
+import android.view.TextureView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +47,7 @@ public class MainActivity extends Activity {
         webView.getLocationOnScreen(webPos); root.getLocationOnScreen(rootPos);
         int left=webPos[0]-rootPos[0]+Math.round(x*d);
         int top=webPos[1]-rootPos[1]+Math.round(y*d);
-        playerView=new PlayerView(this); playerView.setUseController(true); playerView.setSurfaceType(PlayerView.SURFACE_TYPE_TEXTURE_VIEW);
+        playerView=new PlayerView(this); playerView.setUseController(true); playerView.setVideoTextureView(new TextureView(this));
         FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(Math.round(w*d),Math.round(h*d));
         lp.leftMargin=left; lp.topMargin=top;
         root.addView(playerView,lp);
