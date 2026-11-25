@@ -23,12 +23,12 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.rtsp.RtspMediaSource;
-import androidx.media3.ui.PlayerView;
+
 
 public class MainActivity extends Activity {
     private FrameLayout root;
     private WebView webView;
-    private PlayerView playerView;
+    private TextureView playerView;
     private ExoPlayer player;
     private TextView closePlayer;
 
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
         webView.getLocationOnScreen(webPos); root.getLocationOnScreen(rootPos);
         int left=webPos[0]-rootPos[0]+Math.round(x*d);
         int top=webPos[1]-rootPos[1]+Math.round(y*d);
-        playerView=new PlayerView(this); playerView.setUseController(true); playerView.setVideoTextureView(new TextureView(this));
+        playerView=new TextureView(this);
         FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(Math.round(w*d),Math.round(h*d));
         lp.leftMargin=left; lp.topMargin=top;
         root.addView(playerView,lp);
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
                 .setLoadControl(loadControl)
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(httpFactory))
                 .build();
-        playerView.setPlayer(player);
+        player.setVideoTextureView(playerView);
         player.addListener(new Player.Listener() {
             @Override public void onPlayerError(androidx.media3.common.PlaybackException e) {
                 Toast.makeText(MainActivity.this, "ভিডিও চালানো যাচ্ছে না: " + (e.getMessage() == null ? "Stream error" : e.getMessage()), Toast.LENGTH_LONG).show();
