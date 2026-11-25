@@ -1,0 +1,7 @@
+name = "arif-tv-channel-api"
+main = "src/index.js"
+compatibility_date = "2026-11-25"
+
+[[kv_namespaces]]
+binding = "ARIF_TV_CHANNELS"
+id = "2a61a81dd94c48d79c368d6c58d283eb"
