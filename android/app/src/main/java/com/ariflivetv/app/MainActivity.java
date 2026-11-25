@@ -50,7 +50,8 @@ public class MainActivity extends Activity {
         FrameLayout.LayoutParams cp=new FrameLayout.LayoutParams(dp(42),dp(42),Gravity.TOP|Gravity.RIGHT);
         cp.leftMargin=left+Math.round(w*d)-dp(46); cp.topMargin=top+dp(4);
         root.addView(closePlayer,cp); closePlayer.setOnClickListener(v->stopInline());
-        DefaultLoadControl loadControl = new DefaultLoadControl.Builder().setBufferDurationsMs(15000, 50000, 1000, 2000).setPrioritizeTimeOverSizeThresholds(true).build();\n        player=new ExoPlayer.Builder(this).setLoadControl(loadControl).build(); playerView.setPlayer(player);
+        DefaultLoadControl loadControl = new DefaultLoadControl.Builder().setBufferDurationsMs(15000, 50000, 1000, 2000).setPrioritizeTimeOverSizeThresholds(true).build();
+        player=new ExoPlayer.Builder(this).setLoadControl(loadControl).build(); playerView.setPlayer(player);
         player.addListener(new Player.Listener() {
             @Override public void onPlayerError(androidx.media3.common.PlaybackException e) {
                 closePlayer.setText("!"); closePlayer.setOnClickListener(v->stopInline());
